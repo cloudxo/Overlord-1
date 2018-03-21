@@ -13,9 +13,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/kr/pty"
-	"github.com/pkg/term/termios"
-	"github.com/satori/go.uuid"
 	"io"
 	"io/ioutil"
 	"log"
@@ -32,6 +29,10 @@ import (
 	"syscall"
 	"time"
 	"unsafe"
+
+	"github.com/kr/pty"
+	"github.com/pkg/term/termios"
+	"github.com/satori/go.uuid"
 )
 
 var ghostRPCStubPort = GetenvInt("GHOST_RPC_PORT", 4499)
@@ -227,7 +228,7 @@ func NewGhost(addrs []string, tls *tlsSettings, mode int, mid string) *Ghost {
 	)
 
 	if mid == RandomMID {
-		finalMid = uuid.NewV4().String()
+		finalMid = uuid.Must(uuid.NewV4()).String()
 	} else if mid != "" {
 		finalMid = mid
 	} else {
@@ -242,7 +243,7 @@ func NewGhost(addrs []string, tls *tlsSettings, mode int, mid string) *Ghost {
 		tls:             tls,
 		mode:            mode,
 		mid:             finalMid,
-		sid:             uuid.NewV4().String(),
+		sid:             uuid.Must(uuid.NewV4()).String(),
 		ttyName2Sid:     make(map[string]string),
 		terminalSid2Pid: make(map[string]int),
 		properties:      make(map[string]interface{}),
